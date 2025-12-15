@@ -1,0 +1,111 @@
+.test-result-row {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.test-result-row label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.status-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.status-btn {
+  flex: 1;
+  padding: 12px 24px;
+  border: 2px solid #ddd;
+  border-radius: 4px;
+  background-color: white;
+  color: #666;
+  font-weight: 600;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+}
+
+.status-btn.active {
+  color: white;
+}
+
+.status-btn.active.normal {
+  background-color: #0891b2;
+  border-color: #0891b2;
+}
+
+.status-btn.active.needs-review {
+  background-color: #dc2626;
+  border-color: #dc2626;
+}
+
+/* Add styling for CSV notes section */
+.csv-notes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 20px;
+  padding: 12px;
+  background-color: #f8fafc;
+  border-left: 3px solid #0891b2;
+  border-radius: 4px;
+}
+
+.csv-notes-section label {
+  font-weight: 600;
+  color: #0891b2;
+  font-size: 14px;
+}
+
+.csv-notes-content {
+  color: #334155;
+  font-size: 14px;
+  line-height: 1.6;
+}
+
+.notes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.notes-section label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.notes-section textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.notes-section textarea:focus {
+  outline: none;
+  border-color: #0891b2;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}
+
+@media (min-width: 768px) {
+  .test-result-row {
+    flex-direction: row;
+    align-items: center;
+  }
+
+  .test-result-row label {
+    min-width: 100px;
+  }
+
+  .status-buttons {
+    flex: 1;
+  }
+}

@@ -1,0 +1,58 @@
+.risk-score-container {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.risk-score-container label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.risk-score-input {
+  padding: 12px;
+  border: 2px solid #0891b2;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  background-color: #f0f9ff;
+  color: #0891b2;
+}
+
+@media (min-width: 768px) {
+  .risk-score-container {
+    max-width: 400px;
+  }
+}
+
+/* Added styles for doctor's notes section */
+.notes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.notes-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.notes-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.notes-textarea:focus {
+  outline: none;
+  border-color: #0891b2;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}

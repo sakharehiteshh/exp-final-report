@@ -1,0 +1,87 @@
+.vitals-grid {
+  display: grid;
+  gap: 15px;
+  grid-template-columns: 1fr;
+}
+
+.vital-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.vital-item label {
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: #333;
+  font-size: 14px;
+}
+
+.vital-input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.vital-input-group input {
+  flex: 1;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+}
+
+.vital-input-group .unit {
+  color: #666;
+  font-size: 14px;
+  min-width: 40px;
+}
+
+.vital-item input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: #f9f9f9;
+}
+
+.bmi-calculated {
+  background-color: #e0f7fa !important;
+}
+
+@media (min-width: 768px) {
+  .vitals-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+/* Added styles for doctor's notes section */
+.notes-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.notes-label {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+}
+
+.notes-textarea {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-family: inherit;
+  font-size: 14px;
+  resize: vertical;
+  min-height: 100px;
+}
+
+.notes-textarea:focus {
+  outline: none;
+  border-color: #0891b2;
+  box-shadow: 0 0 0 3px rgba(8, 145, 178, 0.1);
+}
