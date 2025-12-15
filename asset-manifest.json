@@ -1,21 +1,21 @@
 {
   "files": {
-    "main.css": "/ExpressDoctorsReport/static/css/main.b90bce54.css",
-    "main.js": "/ExpressDoctorsReport/static/js/main.bbf24311.js",
-    "static/js/239.e0454fef.chunk.js": "/ExpressDoctorsReport/static/js/239.e0454fef.chunk.js",
-    "static/js/977.94812804.chunk.js": "/ExpressDoctorsReport/static/js/977.94812804.chunk.js",
-    "static/js/455.92c172b8.chunk.js": "/ExpressDoctorsReport/static/js/455.92c172b8.chunk.js",
-    "static/js/453.3db49832.chunk.js": "/ExpressDoctorsReport/static/js/453.3db49832.chunk.js",
-    "index.html": "/ExpressDoctorsReport/index.html",
-    "main.b90bce54.css.map": "/ExpressDoctorsReport/static/css/main.b90bce54.css.map",
-    "main.bbf24311.js.map": "/ExpressDoctorsReport/static/js/main.bbf24311.js.map",
-    "239.e0454fef.chunk.js.map": "/ExpressDoctorsReport/static/js/239.e0454fef.chunk.js.map",
-    "977.94812804.chunk.js.map": "/ExpressDoctorsReport/static/js/977.94812804.chunk.js.map",
-    "455.92c172b8.chunk.js.map": "/ExpressDoctorsReport/static/js/455.92c172b8.chunk.js.map",
-    "453.3db49832.chunk.js.map": "/ExpressDoctorsReport/static/js/453.3db49832.chunk.js.map"
+    "main.css": "/exp-final-report/static/css/main.b90bce54.css",
+    "main.js": "/exp-final-report/static/js/main.590c1482.js",
+    "static/js/239.e0454fef.chunk.js": "/exp-final-report/static/js/239.e0454fef.chunk.js",
+    "static/js/977.94812804.chunk.js": "/exp-final-report/static/js/977.94812804.chunk.js",
+    "static/js/455.92c172b8.chunk.js": "/exp-final-report/static/js/455.92c172b8.chunk.js",
+    "static/js/453.3db49832.chunk.js": "/exp-final-report/static/js/453.3db49832.chunk.js",
+    "index.html": "/exp-final-report/index.html",
+    "main.b90bce54.css.map": "/exp-final-report/static/css/main.b90bce54.css.map",
+    "main.590c1482.js.map": "/exp-final-report/static/js/main.590c1482.js.map",
+    "239.e0454fef.chunk.js.map": "/exp-final-report/static/js/239.e0454fef.chunk.js.map",
+    "977.94812804.chunk.js.map": "/exp-final-report/static/js/977.94812804.chunk.js.map",
+    "455.92c172b8.chunk.js.map": "/exp-final-report/static/js/455.92c172b8.chunk.js.map",
+    "453.3db49832.chunk.js.map": "/exp-final-report/static/js/453.3db49832.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.b90bce54.css",
-    "static/js/main.bbf24311.js"
+    "static/js/main.590c1482.js"
   ]
 }
