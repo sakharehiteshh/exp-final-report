@@ -199,11 +199,11 @@ function App() {
 
         // GENERAL DOCTOR NOTES
         drNotes: `
-EKG: ${doctorNotes.ekg}
-Heart Sounds: ${doctorNotes.heartSounds}
-Fitness: ${doctorNotes.fitness}
-Cholesterol: ${doctorNotes.cholesterol}
-Heart Risk Score: ${doctorNotes.heartRiskScore}
+        EKG: ${doctorNotes.ekg}
+        Heart Sounds: ${doctorNotes.heartSounds}
+        Fitness: ${doctorNotes.fitness}
+        Cholesterol: ${doctorNotes.cholesterol}
+        Heart Risk Score: ${doctorNotes.heartRiskScore}
         `,
       });
 

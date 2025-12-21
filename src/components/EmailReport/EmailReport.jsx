@@ -7,12 +7,16 @@ const EmailReport = ({ patient, doctorNotes, doctorAssessments }) => {
   const [email, setEmail] = useState('');
   const [isSending, setIsSending] = useState(false);
 
-  const handleGeneratePDF = () => {
-    const doc = generatePatientReportPDF(patient, doctorNotes, doctorAssessments);
-    const pdfBlob = doc.output('blob');
-    const blobUrl = URL.createObjectURL(pdfBlob);
-    window.open(blobUrl, '_blank');
-  };
+ const handleGeneratePDF = () => {
+  const blobUrl = generatePatientReportPDF(
+    patient,
+    doctorNotes,
+    doctorAssessments
+  );
+
+  window.open(blobUrl, "_blank");
+};
+
 
   const handleSendEmail = async () => {
     if (!email) {
@@ -39,7 +43,7 @@ const EmailReport = ({ patient, doctorNotes, doctorAssessments }) => {
   return (
     <div className="section-container">
       <h2 className="section-title">Email Report</h2>
-      <p className="section-subtitle">Send the preliminary report via email</p>
+      <p className="section-subtitle">Send the Final report via email</p>
       
       <div className="email-form">
         <label>Recipient Email Address</label>
