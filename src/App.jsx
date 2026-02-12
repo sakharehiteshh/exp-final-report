@@ -11,7 +11,8 @@ import FitnessTestSection from "./components/FitnessTestSection/FitnessTestSecti
 import CholesterolSection from "./components/CholesterolSection/CholesterolSection";
 import HeartRiskScore from "./components/HeartRiskScore/HeartRiskScore";
 import EmailReport from "./components/EmailReport/EmailReport";
-
+import HolterMonitorSection from "./components/HolterMonitorSection/HolterMonitorSection";
+import OtherDoctorNotes from "./components/OtherDoctorNotes/OtherDoctorNotes";
 import "./App.css";
 
 import { fetchPatientsFromSheet } from "./utils/fetchPatientsFromSheet";
@@ -20,6 +21,7 @@ import { saveFinalReport } from "./utils/saveFinalReport";
 function App() {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
+  const [holterStatus, setHolterStatus] = useState("")
 
   const [doctorNotes, setDoctorNotes] = useState({
     ekg: "",
@@ -28,6 +30,8 @@ function App() {
     vitals: "",
     cholesterol: "",
     heartRiskScore: "",
+    holterMonitor: "",
+    otherNotes: "",
   });
 
   const [doctorAssessments, setDoctorAssessments] = useState({
@@ -37,6 +41,8 @@ function App() {
     vitals: "",
     cholesterol: "",
     heartRiskScore: "",
+    holterMonitor: "",
+    otherNotes: "",
   });
 
   // Load prelim records from Google Sheets
@@ -106,6 +112,7 @@ function App() {
   const handlePatientSelect = (patientId) => {
     const patient = patients.find((p) => p.id === parseInt(patientId, 10));
     setSelectedPatient(patient);
+    setHolterStatus("")
 
     // Clear doctor notes/assessments when switching patient
     setDoctorNotes({
@@ -191,6 +198,15 @@ function App() {
         totalCholesterolNotes: selectedPatient.totalCholesterolNotes,
         cholesterolDrNotes: doctorNotes.cholesterol,
         cholesterolDrAssessment: doctorAssessments.cholesterol,
+
+        // HOLTER MONITOR
+        holterStatus: selectedPatient.holterStatus,
+        holterNotes: doctorNotes.holter,
+        holterDrAssessment: doctorAssessments.holter,
+
+        //other notes
+        otherDrNotes: doctorNotes.otherNotes,
+        otherDrAssessment: doctorAssessments.otherNotes,
 
         // HEART RISK SCORE
         heartRiskScore: selectedPatient.heartRiskScore,
@@ -292,11 +308,29 @@ function App() {
               }
             />
 
-            <EmailReport
-              patient={selectedPatient}
-              doctorNotes={doctorNotes}
-              doctorAssessments={doctorAssessments}
+            <HolterMonitorSection
+              result={selectedPatient.holterStatus}
+              notes={doctorNotes.holterMonitor}
+              onNotesChange={(value) => handleNoteChange("holterMonitor", value)}
+              assessment={doctorAssessments.holterMonitor}
+              onAssessmentChange={(value) =>
+                handleAssessmentChange("holterMonitor", value)
+              }
             />
+
+            <OtherDoctorNotes
+              notes={doctorNotes.otherNotes}
+              onNotesChange={(value) => handleNoteChange("otherNotes", value)}
+            />
+            
+            
+            <EmailReport
+            patient={selectedPatient}
+            doctorNotes={doctorNotes}
+            doctorAssessments={doctorAssessments}
+            holterStatus={holterStatus}
+            />
+
 
             {/* Save Final Report Button */}
             <button

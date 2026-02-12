@@ -11,7 +11,7 @@ const HeartRiskScore = ({ score, notes, onNotesChange, assessment, onAssessmentC
         <label>Risk Score</label>
         <input 
           type="text" 
-          value={score ? `${score}` : '<1%'} 
+          value={score ? `${score}%` : '<1%'} 
           readOnly 
           className="risk-score-input"
         />

@@ -197,10 +197,20 @@ export function generatePatientReportPDF(
   /* ================= HEART RISK SCORE ================= */
 
   sectionTitle("Heart Risk Score");
-  resultRow(patient.heartRiskScore || "NA");
+  resultRow(patient.heartRiskScore + "%" || "NA");
   doctorNotesBlock(doctorNotes.heartRiskScore);
   divider();
 
+  /* ================= HOLTER MONITOR ================= */
+  sectionTitle("Holter Monitor");
+  resultRow(doctorAssessments.holterMonitor);
+  doctorNotesBlock(doctorNotes.holterMonitor);
+  divider();
+
+  /* ================= OTHER DOCTOR NOTES ================= */
+  sectionTitle("Other Doctor Notes");
+  doctorNotesBlock(doctorNotes.otherNotes); 
+  divider();
   /* ================= SIGNATURE ================= */
 
   ensureSpace(18);
