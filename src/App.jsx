@@ -13,6 +13,8 @@ import HeartRiskScore from "./components/HeartRiskScore/HeartRiskScore";
 import EmailReport from "./components/EmailReport/EmailReport";
 import HolterMonitorSection from "./components/HolterMonitorSection/HolterMonitorSection";
 import OtherDoctorNotes from "./components/OtherDoctorNotes/OtherDoctorNotes";
+import SymptomsSection from "./components/SymptomsSection/SymptomsSection";
+import ExpressHeartScore from "./components/ExpressHeartScore/ExpressHeartScore";
 import "./App.css";
 
 import { fetchPatientsFromSheet } from "./utils/fetchPatientsFromSheet";
@@ -22,6 +24,7 @@ function App() {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [holterStatus, setHolterStatus] = useState("")
+  const [viewedPatients, setViewedPatients] = useState(new Set());
 
   const [doctorNotes, setDoctorNotes] = useState({
     ekg: "",
@@ -98,6 +101,20 @@ function App() {
 
           // HEART RISK
           heartRiskScore: p["Heart Risk Score"],
+
+          // PATIENT-REPORTED
+          symptoms:
+            p["Symptoms"] ||
+            p["Symptoms/Complaints"] ||
+            p["Chief Complaint"] ||
+            p["Patient Symptoms"] ||
+            "",
+          questions:
+            p["Questions"] ||
+            p["Question"] ||
+            p["Questions for the Doctor"] ||
+            p["Patient Questions"] ||
+            "",
         }));
 
         setPatients(parsed);
@@ -110,11 +127,12 @@ function App() {
   }, []);
 
   const handlePatientSelect = (patientId) => {
-    const patient = patients.find((p) => p.id === parseInt(patientId, 10));
+    const id = parseInt(patientId, 10);
+    const patient = patients.find((p) => p.id === id);
     setSelectedPatient(patient);
-    setHolterStatus("")
+    setHolterStatus("");
+    setViewedPatients((prev) => new Set([...prev, id]));
 
-    // Clear doctor notes/assessments when switching patient
     setDoctorNotes({
       ekg: "",
       heartSounds: "",
@@ -122,6 +140,8 @@ function App() {
       vitals: "",
       cholesterol: "",
       heartRiskScore: "",
+      holterMonitor: "",
+      otherNotes: "",
     });
     setDoctorAssessments({
       ekg: "",
@@ -130,6 +150,8 @@ function App() {
       vitals: "",
       cholesterol: "",
       heartRiskScore: "",
+      holterMonitor: "",
+      otherNotes: "",
     });
   };
 
@@ -201,12 +223,16 @@ function App() {
 
         // HOLTER MONITOR
         holterStatus: selectedPatient.holterStatus,
-        holterNotes: doctorNotes.holter,
-        holterDrAssessment: doctorAssessments.holter,
+        holterNotes: doctorNotes.holterMonitor,
+        holterDrAssessment: doctorAssessments.holterMonitor,
 
         //other notes
         otherDrNotes: doctorNotes.otherNotes,
         otherDrAssessment: doctorAssessments.otherNotes,
+
+        // PATIENT-REPORTED
+        symptoms: selectedPatient.symptoms,
+        questions: selectedPatient.questions,
 
         // HEART RISK SCORE
         heartRiskScore: selectedPatient.heartRiskScore,
@@ -238,11 +264,30 @@ function App() {
       </header>
 
       <div className="content-wrapper">
-        <PatientSelector patients={patients} onSelect={handlePatientSelect} />
+        <PatientSelector patients={patients} onSelect={handlePatientSelect} viewedPatients={viewedPatients} />
 
         {selectedPatient && (
           <>
+            <ExpressHeartScore patient={selectedPatient} />
+
             <PatientDemographics patient={selectedPatient} />
+
+            <SymptomsSection
+              symptoms={selectedPatient.symptoms}
+              questions={selectedPatient.questions}
+            />
+
+            <HeartRiskScore
+              score={selectedPatient.heartRiskScore}
+              notes={doctorNotes.heartRiskScore}
+              onNotesChange={(value) =>
+                handleNoteChange("heartRiskScore", value)
+              }
+              assessment={doctorAssessments.heartRiskScore}
+              onAssessmentChange={(value) =>
+                handleAssessmentChange("heartRiskScore", value)
+              }
+            />
 
             <TestVitals
               patient={selectedPatient}
@@ -293,18 +338,6 @@ function App() {
               assessment={doctorAssessments.cholesterol}
               onAssessmentChange={(value) =>
                 handleAssessmentChange("cholesterol", value)
-              }
-            />
-
-            <HeartRiskScore
-              score={selectedPatient.heartRiskScore}
-              notes={doctorNotes.heartRiskScore}
-              onNotesChange={(value) =>
-                handleNoteChange("heartRiskScore", value)
-              }
-              assessment={doctorAssessments.heartRiskScore}
-              onAssessmentChange={(value) =>
-                handleAssessmentChange("heartRiskScore", value)
               }
             />
 

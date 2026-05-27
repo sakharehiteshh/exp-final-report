@@ -20,11 +20,6 @@
   color: #0891b2;
 }
 
-@media (min-width: 768px) {
-  .risk-score-container {
-    max-width: 400px;
-  }
-}
 
 /* Added styles for doctor's notes section */
 .notes-section {

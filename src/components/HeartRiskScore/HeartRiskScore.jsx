@@ -5,14 +5,14 @@ const HeartRiskScore = ({ score, notes, onNotesChange, assessment, onAssessmentC
   return (
     <div className="section-container">
       <h2 className="section-title">Heart Risk Score</h2>
-      <p className="section-subtitle">Overall cardiovascular risk assessment (Abbott ASCVD Score)</p>
-      
+      <p className="section-subtitle">Abbott ASCVD / Framingham 10-year cardiovascular risk</p>
+
       <div className="risk-score-container">
         <label>Risk Score</label>
-        <input 
-          type="text" 
-          value={score ? `${score}%` : '<1%'} 
-          readOnly 
+        <input
+          type="text"
+          value={score ? `${score}%` : '<1%'}
+          readOnly
           className="risk-score-input"
         />
       </div>
