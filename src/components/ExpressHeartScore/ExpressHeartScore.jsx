@@ -1,18 +1,17 @@
 import React from 'react';
 import './ExpressHeartScore.css';
-import { calculateExpressHeartScore } from '../../utils/calculateExpressHeartScore';
 
 /* ── Grade config ── */
 const GRADE = {
-  ELITE:            { color: '#0891b2', light: '#ecfeff', border: '#0891b2', emoji: '🏆', desc: 'Peak cardiovascular efficiency.' },
-  OPTIMAL:          { color: '#16a34a', light: '#f0fdf4', border: '#22c55e', emoji: '✅', desc: 'Strong heart health; low risk profile.' },
+  ELITE:            { color: '#22c55e', light: '#ecfeff', border: '#22c55e', emoji: '🏆', desc: 'Peak cardiovascular efficiency.' },
+  OPTIMAL:          { color: '#16a34a', light: '#f0fdf4', border: '#16a34a', emoji: '✅', desc: 'Strong heart health; low risk profile.' },
   FAIR:             { color: '#d97706', light: '#fffbeb', border: '#f59e0b', emoji: '⚠️', desc: 'Functional, but with identified areas for optimization.' },
   'ACTION REQUIRED':{ color: '#dc2626', light: '#fef2f2', border: '#ef4444', emoji: '🚨', desc: 'Significant indicators found; requires immediate cardiology consultation.' },
 };
 
 /* ── Grading scale rows ── */
 const GRADING_SCALE = [
-  { range: '90 – 100', label: 'ELITE',           color: '#0891b2', meaning: 'Peak cardiovascular efficiency' },
+  { range: '90 – 100', label: 'ELITE',           color: '#22c55e', meaning: 'Peak cardiovascular efficiency' },
   { range: '80 – 89',  label: 'OPTIMAL',         color: '#16a34a', meaning: 'Strong heart health; low risk profile' },
   { range: '70 – 79',  label: 'FAIR',            color: '#d97706', meaning: 'Functional, with identified areas for optimization' },
   { range: 'Below 70', label: 'ACTION REQUIRED', color: '#dc2626', meaning: 'Significant indicators; immediate cardiology consult' },
@@ -20,31 +19,25 @@ const GRADING_SCALE = [
 
 /* ── Zone-colored semicircle gauge ── */
 function GaugeMeter({ score, color }) {
-  const cx = 130, cy = 116, R = 80, Rz = 98;
+  const cx = 130, cy = 118, R = 84, Rz = 104;
   const C       = Math.PI * R;
   const clamped = Math.max(0, Math.min(100, score));
   const filled  = (clamped / 100) * C;
   const gap     = C - filled;
 
-  /* Point at fraction f (0=left, 1=right) along the semicircle at radius r */
   const pt = (f, r) => ({
     x: cx + r * Math.cos(Math.PI * (1 - f)),
     y: cy - r * Math.sin(Math.PI * (1 - f)),
   });
 
-  /* SVG arc path from fraction f1 to f2 at radius r (always minor arc within semicircle) */
   const arcD = (f1, f2, r) => {
     const p1 = pt(f1, r), p2 = pt(f2, r);
     return `M ${p1.x.toFixed(2)} ${p1.y.toFixed(2)} A ${r} ${r} 0 0 1 ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
   };
 
-  /* Full background / score arc */
   const bgPath = `M ${cx - R} ${cy} A ${R} ${R} 0 0 1 ${cx + R} ${cy}`;
-
-  /* Endpoint dot position (only when score is between 0 and 100) */
   const ep = clamped > 0 && clamped < 100 ? pt(clamped / 100, R) : null;
 
-  /* Zone boundary tick label positions */
   const tickData = [
     { f: 0.70, lbl: '70' },
     { f: 0.80, lbl: '80' },
@@ -55,13 +48,11 @@ function GaugeMeter({ score, color }) {
     <svg viewBox="0 0 260 130" className="gauge-svg"
          aria-label={`Express Heart Score: ${score} out of 100`}>
 
-      {/* ── Outer zone colour bands ── */}
-      <path d={arcD(0,    0.70, Rz)} fill="none" stroke="#fca5a5" strokeWidth="11" strokeLinecap="butt"/>
-      <path d={arcD(0.70, 0.80, Rz)} fill="none" stroke="#fcd34d" strokeWidth="11" strokeLinecap="butt"/>
-      <path d={arcD(0.80, 0.90, Rz)} fill="none" stroke="#86efac" strokeWidth="11" strokeLinecap="butt"/>
-      <path d={arcD(0.90, 1.00, Rz)} fill="none" stroke="#22c55e" strokeWidth="11" strokeLinecap="butt"/>
+      <path d={arcD(0,    0.70, Rz)} fill="none" stroke="#fca5a5" strokeWidth="13" strokeLinecap="butt"/>
+      <path d={arcD(0.70, 0.80, Rz)} fill="none" stroke="#fcd34d" strokeWidth="13" strokeLinecap="butt"/>
+      <path d={arcD(0.80, 0.90, Rz)} fill="none" stroke="#86efac" strokeWidth="13" strokeLinecap="butt"/>
+      <path d={arcD(0.90, 1.00, Rz)} fill="none" stroke="#22c55e" strokeWidth="13" strokeLinecap="butt"/>
 
-      {/* ── Zone boundary tick marks ── */}
       {tickData.map(({ f }) => {
         const pi = pt(f, R - 7);
         const po = pt(f, Rz + 7);
@@ -73,7 +64,6 @@ function GaugeMeter({ score, color }) {
         );
       })}
 
-      {/* ── Zone boundary labels ── */}
       {tickData.map(({ f, lbl }) => {
         const tp = pt(f, Rz + 17);
         return (
@@ -84,58 +74,58 @@ function GaugeMeter({ score, color }) {
         );
       })}
 
-      {/* ── Background track ── */}
-      <path d={bgPath} fill="none" stroke="#e5e7eb" strokeWidth="15" strokeLinecap="round"/>
-
-      {/* ── Score fill arc ── */}
-      <path d={bgPath} fill="none" stroke={color} strokeWidth="15" strokeLinecap="round"
+      <path d={bgPath} fill="none" stroke="#e5e7eb" strokeWidth="18" strokeLinecap="round"/>
+      <path d={bgPath} fill="none" stroke={color} strokeWidth="18" strokeLinecap="round"
             strokeDasharray={`${filled.toFixed(2)} ${gap.toFixed(2)}`}/>
 
-      {/* ── Score endpoint dot ── */}
       {ep && (
         <circle cx={ep.x.toFixed(2)} cy={ep.y.toFixed(2)} r="7"
                 fill={color} stroke="white" strokeWidth="2"/>
       )}
 
-      {/* ── Centre score number ── */}
-      <text x={cx} y={cy - 12} textAnchor="middle" fontSize="46" fontWeight="bold"
+      <text x={cx} y={cy - 14} textAnchor="middle" fontSize="54" fontWeight="bold"
             fill={color} fontFamily="Arial, Helvetica, sans-serif">{score}</text>
-      <text x={cx} y={cy + 3}  textAnchor="middle" fontSize="11" fill="#9ca3af"
+      <text x={cx} y={cy + 4}  textAnchor="middle" fontSize="12" fill="#9ca3af"
             fontFamily="Arial, Helvetica, sans-serif">out of 100</text>
     </svg>
   );
 }
 
+function gradeFromScore(score) {
+  if (score >= 90) return 'ELITE';
+  if (score >= 80) return 'OPTIMAL';
+  if (score >= 70) return 'FAIR';
+  return 'ACTION REQUIRED';
+}
+
 /* ── Main component ── */
 const ExpressHeartScore = ({ patient }) => {
-  const { total, grade } = calculateExpressHeartScore(patient);
+  const total = Math.round(Number(patient?.expressHeartScore) || 0);
+  const grade = gradeFromScore(total);
   const cfg = GRADE[grade];
 
   return (
     <div
+      id="ehs-card-capture"
       className="section-container ehs-card"
-      style={{ borderLeft: `5px solid ${cfg.border}`, background: cfg.light }}
+      style={{ borderLeft: `5px solid ${cfg.border}`, background: '#ffffff' }}
     >
-      {/* ── Card header ── */}
-      <div className="ehs-card-header">
-        <div>
-          <h2 className="section-title ehs-title" style={{ color: cfg.color }}>
-            ♥ Express Heart Score™
-          </h2>
-          <p className="section-subtitle" style={{ marginBottom: 0 }}>
-            Composite of 5 clinical pillars · Maximum 100 pts
-          </p>
-        </div>
-        <div className="ehs-formula">
-          S&nbsp;=&nbsp;W<sub>F</sub>&nbsp;+&nbsp;W<sub>E</sub>&nbsp;+&nbsp;W<sub>A</sub>&nbsp;+&nbsp;W<sub>V</sub>&nbsp;+&nbsp;W<sub>B</sub>
-        </div>
-      </div>
-
-      {/* ── Two-column: gauge left, grading scale right ── */}
+      {/* ── Two-column layout: title+gauge left, grading scale right ── */}
       <div className="ehs-main-layout">
 
-        {/* Left — gauge + grade badge */}
+        {/* Left — title + subtitle + gauge + grade badge */}
         <div className="ehs-gauge-col">
+          <div className="ehs-gauge-header">
+            <h2 className="section-title ehs-title" style={{ color: cfg.color }}>
+              ♥ Express Heart Score™
+            </h2>
+            <p className="section-subtitle ehs-subtitle">
+              Composite of 5 clinical pillars · Maximum 100 pts
+            </p>
+            <div className="ehs-formula">
+              S&nbsp;=&nbsp;W<sub>F</sub>&nbsp;+&nbsp;W<sub>E</sub>&nbsp;+&nbsp;W<sub>A</sub>&nbsp;+&nbsp;W<sub>V</sub>&nbsp;+&nbsp;W<sub>B</sub>
+            </div>
+          </div>
           <GaugeMeter score={total} color={cfg.color} />
           <div className="ehs-grade-badge" style={{ background: cfg.color }}>
             {cfg.emoji}&nbsp;&nbsp;{grade}
@@ -145,7 +135,7 @@ const ExpressHeartScore = ({ patient }) => {
           </p>
         </div>
 
-        {/* Right — grading scale table */}
+        {/* Right — grading scale (starts at same level as title) */}
         <div className="ehs-scale-col">
           <p className="ehs-scale-heading">Express Heart Score™ Grading Scale</p>
           <table className="ehs-scale-table">

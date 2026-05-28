@@ -102,6 +102,9 @@ function App() {
           // HEART RISK
           heartRiskScore: p["Heart Risk Score"],
 
+          // EXPRESS HEART SCORE (pre-calculated in prelim record)
+          expressHeartScore: p["Express Heart Risk Score"] || "",
+
           // PATIENT-REPORTED
           symptoms:
             p["Symptoms"] ||

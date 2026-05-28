@@ -1,19 +1,43 @@
 import React, { useState } from "react";
+import html2canvas from "html2canvas";
 import { generatePatientReportPDF } from "../../utils/pdf-generator";
 import "./EmailReport.css";
+
+/* Capture the Express Heart Score card as a PNG data-URL.
+   The formula chip (.ehs-formula) is intentionally excluded. */
+async function captureEHSCard() {
+  const el = document.getElementById("ehs-card-capture");
+  if (!el) return null;
+  try {
+    const canvas = await html2canvas(el, {
+      scale: 2,
+      useCORS: true,
+      backgroundColor: null,
+      ignoreElements: (node) =>
+        node.classList && node.classList.contains("ehs-formula"),
+    });
+    return canvas.toDataURL("image/png");
+  } catch {
+    return null;
+  }
+}
 
 const EmailReport = ({ patient, doctorNotes, doctorAssessments, holterStatus }) => {
   const [email, setEmail] = useState("");
   const [isSending, setIsSending] = useState(false);
+  const [isGenerating, setIsGenerating] = useState(false);
 
-  const handleGeneratePDF = () => {
+  const handleGeneratePDF = async () => {
+    setIsGenerating(true);
+    const ehsImage = await captureEHSCard();
     const blobUrl = generatePatientReportPDF(
       patient,
       doctorNotes,
       doctorAssessments,
-      holterStatus
+      holterStatus,
+      ehsImage
     );
-
+    setIsGenerating(false);
     window.open(blobUrl, "_blank");
   };
 
@@ -25,17 +49,19 @@ const EmailReport = ({ patient, doctorNotes, doctorAssessments, holterStatus }) 
 
     setIsSending(true);
 
-    // ✅ Generate the SAME pdf that includes holterStatus
-    const blobUrl = generatePatientReportPDF(
+    const ehsImage = await captureEHSCard();
+    // ✅ Generate the SAME pdf that includes holterStatus + EHS graphic
+    // (blobUrl will be used when backend email sending is implemented)
+    generatePatientReportPDF(
       patient,
       doctorNotes,
       doctorAssessments,
-      holterStatus
+      holterStatus,
+      ehsImage
     );
 
     // If you later implement backend email sending,
-    // you can fetch the blob from blobUrl and POST it.
-    // For now, this mock just confirms.
+    // capture the blobUrl above and POST it to your API.
     setTimeout(() => {
       alert(
         `Report would be sent to: ${email}\n\nNote: Email functionality requires backend implementation`
@@ -68,8 +94,8 @@ const EmailReport = ({ patient, doctorNotes, doctorAssessments, holterStatus }) 
             {isSending ? "Sending..." : "Send Report via Email"}
           </button>
 
-          <button className="btn-secondary" onClick={handleGeneratePDF}>
-            Generate Preliminary Report (PDF)
+          <button className="btn-secondary" onClick={handleGeneratePDF} disabled={isGenerating}>
+            {isGenerating ? "Preparing PDF…" : "Generate Preliminary Report (PDF)"}
           </button>
         </div>
       </div>
