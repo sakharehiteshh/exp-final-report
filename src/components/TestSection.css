@@ -42,6 +42,15 @@
   border-color: #dc2626;
 }
 
+.status-btn.active.moderate {
+  background-color: #d97706;
+  border-color: #d97706;
+}
+
+.status-btn.selectable {
+  cursor: pointer;
+}
+
 /* Add styling for CSV notes section */
 .csv-notes-section {
   display: flex;

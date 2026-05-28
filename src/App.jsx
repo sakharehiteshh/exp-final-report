@@ -1,5 +1,5 @@
 // src/App.jsx
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { Heart } from "lucide-react";
 
 import PatientSelector from "./components/PatientSelector/PatientSelector";
@@ -19,12 +19,15 @@ import "./App.css";
 
 import { fetchPatientsFromSheet } from "./utils/fetchPatientsFromSheet";
 import { saveFinalReport } from "./utils/saveFinalReport";
+import { calculateExpressHeartScore } from "./utils/calculateExpressHeartScore";
 
 function App() {
   const [patients, setPatients] = useState([]);
   const [selectedPatient, setSelectedPatient] = useState(null);
   const [holterStatus, setHolterStatus] = useState("")
   const [viewedPatients, setViewedPatients] = useState(new Set());
+  const [ekgRhythmSelection, setEkgRhythmSelection] = useState('');
+  const [heartSoundsClassification, setHeartSoundsClassification] = useState('');
 
   const [doctorNotes, setDoctorNotes] = useState({
     ekg: "",
@@ -129,11 +132,38 @@ function App() {
     load();
   }, []);
 
+  // Recalculate Express Heart Score only after the doctor makes a classification selection.
+  // Before any selection the sheet's pre-calculated score is shown (see ExpressHeartScore.jsx).
+  const liveScore = useMemo(() => {
+    if (!selectedPatient || (!ekgRhythmSelection && !heartSoundsClassification)) return null;
+    let p = { ...selectedPatient };
+
+    if (ekgRhythmSelection === 'Normal Sinus Rhythm') {
+      p = { ...p, ekgStatus: 'normal', ekgNotes: '' };
+    } else if (ekgRhythmSelection === 'Sinus Tachy / Bradycardia') {
+      p = { ...p, ekgStatus: '', ekgNotes: 'tachycardia' };
+    } else if (ekgRhythmSelection === 'AFib / PVCs / Other') {
+      p = { ...p, ekgStatus: '', ekgNotes: 'fibrillation pvc' };
+    }
+
+    if (heartSoundsClassification === 'Normal (No Murmur)') {
+      p = { ...p, heartSoundsStatus: 'normal', heartSoundsNotes: '' };
+    } else if (heartSoundsClassification === 'Innocent Murmur') {
+      p = { ...p, heartSoundsStatus: '', heartSoundsNotes: 'innocent murmur' };
+    } else if (heartSoundsClassification === 'Structural Murmur / Low EF') {
+      p = { ...p, heartSoundsStatus: '', heartSoundsNotes: 'structural murmur' };
+    }
+
+    return calculateExpressHeartScore(p);
+  }, [selectedPatient, ekgRhythmSelection, heartSoundsClassification]);
+
   const handlePatientSelect = (patientId) => {
     const id = parseInt(patientId, 10);
     const patient = patients.find((p) => p.id === id);
     setSelectedPatient(patient);
     setHolterStatus("");
+    setEkgRhythmSelection('');
+    setHeartSoundsClassification('');
     setViewedPatients((prev) => new Set([...prev, id]));
 
     setDoctorNotes({
@@ -271,7 +301,7 @@ function App() {
 
         {selectedPatient && (
           <>
-            <ExpressHeartScore patient={selectedPatient} />
+            <ExpressHeartScore patient={selectedPatient} liveScore={liveScore} />
 
             <PatientDemographics patient={selectedPatient} />
 
@@ -307,6 +337,8 @@ function App() {
               onNotesChange={(value) => handleNoteChange("ekg", value)}
               assessment={doctorAssessments.ekg}
               onAssessmentChange={(value) => handleAssessmentChange("ekg", value)}
+              rhythmClassification={ekgRhythmSelection}
+              onRhythmChange={setEkgRhythmSelection}
             />
 
             <HeartSoundsSection
@@ -318,6 +350,8 @@ function App() {
               onAssessmentChange={(value) =>
                 handleAssessmentChange("heartSounds", value)
               }
+              auscultationClassification={heartSoundsClassification}
+              onAuscultationChange={setHeartSoundsClassification}
             />
 
             <FitnessTestSection

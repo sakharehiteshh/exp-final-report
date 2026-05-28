@@ -1,5 +1,6 @@
 import React from 'react';
 import './ExpressHeartScore.css';
+import { calculateExpressHeartScore } from '../../utils/calculateExpressHeartScore';
 
 /* ── Grade config ── */
 const GRADE = {
@@ -98,11 +99,46 @@ function gradeFromScore(score) {
   return 'ACTION REQUIRED';
 }
 
+/* ── Pillar metadata ── */
+const PILLARS = [
+  { key: 'framingham', label: 'Framingham (Wⁱ)',  max: 20, sub: 'F' },
+  { key: 'ekg',        label: 'EKG Rhythm (Wᵊ)',  max: 25, sub: 'E' },
+  { key: 'acoustic',   label: 'Acoustics (Wᴬ)',   max: 25, sub: 'A' },
+  { key: 'metabolic',  label: 'Metabolic (Wᵛ)',   max: 15, sub: 'V' },
+  { key: 'hemodynamic',label: 'Hemodynamic (Wᴮ)', max: 15, sub: 'B' },
+];
+
+function pillarColor(score, max) {
+  const pct = score / max;
+  if (pct >= 0.9) return '#22c55e';
+  if (pct >= 0.6) return '#d97706';
+  return '#dc2626';
+}
+
 /* ── Main component ── */
-const ExpressHeartScore = ({ patient }) => {
-  const total = Math.round(Number(patient?.expressHeartScore) || 0);
+const ExpressHeartScore = ({ patient, liveScore }) => {
+  // Priority:
+  // 1. Doctor has made selections → use live calculated score (liveScore)
+  // 2. Sheet has a pre-calculated score → display it directly
+  // 3. Sheet score is missing → calculate from patient data (never fall back to 0)
+  let total, pillars;
+  if (liveScore) {
+    total   = liveScore.total;
+    pillars = liveScore.pillars;
+  } else {
+    const sheetVal = Number(patient?.expressHeartScore);
+    if (sheetVal > 0) {
+      total   = Math.round(sheetVal);
+      pillars = null;
+    } else {
+      const calc = calculateExpressHeartScore(patient);
+      total   = calc.total;
+      pillars = calc.pillars;
+    }
+  }
+
   const grade = gradeFromScore(total);
-  const cfg = GRADE[grade];
+  const cfg   = GRADE[grade];
 
   return (
     <div
@@ -182,6 +218,38 @@ const ExpressHeartScore = ({ patient }) => {
         </div>
 
       </div>
+
+      {/* ── Pillar breakdown (shows when live score is available) ── */}
+      {pillars && (
+        <div className="ehs-pillars">
+          <p className="ehs-pillars-heading">5-Pillar Breakdown</p>
+          <div className="ehs-pillars-grid">
+            {PILLARS.map(({ key, label, max }) => {
+              const p = pillars[key];
+              if (!p) return null;
+              const pct = Math.round((p.score / max) * 100);
+              const clr = pillarColor(p.score, max);
+              return (
+                <div key={key} className="ehs-pillar-item">
+                  <div className="ehs-pillar-header">
+                    <span className="ehs-pillar-label">{label}</span>
+                    <span className="ehs-pillar-score" style={{ color: clr }}>
+                      {p.score}/{max}
+                    </span>
+                  </div>
+                  <div className="ehs-pillar-bar-bg">
+                    <div
+                      className="ehs-pillar-bar-fill"
+                      style={{ width: `${pct}%`, background: clr }}
+                    />
+                  </div>
+                  <span className="ehs-pillar-detail">{p.detail}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

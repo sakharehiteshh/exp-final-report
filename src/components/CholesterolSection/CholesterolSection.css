@@ -22,6 +22,66 @@
   border-radius: 4px;
   font-size: 14px;
   background-color: #f9f9f9;
+  flex: 1;
+}
+
+/* Flag wrapper */
+.value-with-flag {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Flagged input borders */
+.chol-input-flagged {
+  font-weight: 600;
+}
+
+.chol-input-high {
+  border-color: #dc2626 !important;
+  background-color: #fff5f5 !important;
+  color: #b91c1c !important;
+}
+
+.chol-input-borderline {
+  border-color: #d97706 !important;
+  background-color: #fffbeb !important;
+  color: #92400e !important;
+}
+
+.chol-input-low {
+  border-color: #2563eb !important;
+  background-color: #eff6ff !important;
+  color: #1d4ed8 !important;
+}
+
+/* Flag badges */
+.chol-flag-badge {
+  display: inline-block;
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.chol-flag-high {
+  background: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+.chol-flag-borderline {
+  background: #fef3c7;
+  color: #92400e;
+  border: 1px solid #fcd34d;
+}
+
+.chol-flag-low {
+  background: #dbeafe;
+  color: #1d4ed8;
+  border: 1px solid #93c5fd;
 }
 
 @media (min-width: 768px) {

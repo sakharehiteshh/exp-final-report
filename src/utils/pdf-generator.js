@@ -387,22 +387,36 @@ export function generatePatientReportPDF(
   ════════════════════════════════════════════ */
   secHead("Finger-Stick Cholesterol Panel");
   {
+    const cholFlag = (test, val) => {
+      const v = parseFloat(val);
+      if (isNaN(v)) return '';
+      switch (test) {
+        case 'tc':  return v >= 200 ? 'H' : '';
+        case 'ldl': return v >= 130 ? 'H' : '';
+        case 'hdl': return v < 40   ? 'L' : '';
+        case 'tg':  return v >= 150 ? 'H' : '';
+        case 'glc': return v < 70   ? 'L' : (v >= 100 ? 'H' : '');
+        default:    return '';
+      }
+    };
+
     const labCols = [
-      { h: "Test",            w: 72 },
-      { h: "Result",          w: 50 },
-      { h: "Reference Range", w: 62 },
+      { h: "Test",            w: 66 },
+      { h: "Result",          w: 46 },
+      { h: "Reference Range", w: 52 },
+      { h: "Flag",            w: 20 },
     ];
     const rows = [];
     if (patient.totalCholesterol)
-      rows.push(["Total Cholesterol", `${patient.totalCholesterol} mg/dL`, "< 200 mg/dL"]);
+      rows.push(["Total Cholesterol", `${patient.totalCholesterol} mg/dL`, "< 200 mg/dL",       cholFlag('tc',  patient.totalCholesterol)]);
     if (patient.ldlCholesterol)
-      rows.push(["LDL Cholesterol",   `${patient.ldlCholesterol} mg/dL`,  "< 100 mg/dL"]);
+      rows.push(["LDL Cholesterol",   `${patient.ldlCholesterol} mg/dL`,  "< 130 mg/dL",        cholFlag('ldl', patient.ldlCholesterol)]);
     if (patient.hdlCholesterol)
-      rows.push(["HDL Cholesterol",   `${patient.hdlCholesterol} mg/dL`,  ">= 40 (M) / >= 50 (F) mg/dL"]);
+      rows.push(["HDL Cholesterol",   `${patient.hdlCholesterol} mg/dL`,  ">= 40 mg/dL",        cholFlag('hdl', patient.hdlCholesterol)]);
     if (patient.triglycerides)
-      rows.push(["Triglycerides",     `${patient.triglycerides} mg/dL`,   "< 150 mg/dL"]);
+      rows.push(["Triglycerides",     `${patient.triglycerides} mg/dL`,   "< 150 mg/dL",        cholFlag('tg',  patient.triglycerides)]);
     if (patient.glucose)
-      rows.push(["Glucose",           `${patient.glucose} mg/dL`,         "70 – 99 mg/dL"]);
+      rows.push(["Glucose",           `${patient.glucose} mg/dL`,         "70 – 99 mg/dL",      cholFlag('glc', patient.glucose)]);
 
     if (rows.length) clinTable(labCols, rows);
     else noData("Cholesterol panel results not available.");
