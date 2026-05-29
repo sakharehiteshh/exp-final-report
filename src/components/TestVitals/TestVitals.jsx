@@ -1,7 +1,22 @@
 import React from 'react';
 import './TestVitals.css';
 
+const parseHeightToInches = (heightStr) => {
+  if (!heightStr) return null;
+  // Handle formats: "5'10\"", "5'10", "70", "5 ft 10 in", "5.10"
+  const ftIn = heightStr.match(/(\d+)['\s][\s]?(\d+)/);
+  if (ftIn) return parseInt(ftIn[1]) * 12 + parseInt(ftIn[2]);
+  const inOnly = heightStr.match(/^(\d+(?:\.\d+)?)$/);
+  if (inOnly) return parseFloat(inOnly[1]);
+  return null;
+};
+
 const TestVitals = ({ patient, notes, onNotesChange, assessment, onAssessmentChange }) => {
+  const heightInches = parseHeightToInches(patient.height);
+  const idealWeightRange = heightInches
+    ? `${Math.round(18.5 * heightInches * heightInches / 703)} – ${Math.round(24.9 * heightInches * heightInches / 703)} lbs`
+    : '—';
+
   return (
     <div className="section-container">
       <h2 className="section-title">Test Vitals</h2>
@@ -21,6 +36,11 @@ const TestVitals = ({ patient, notes, onNotesChange, assessment, onAssessmentCha
         <div className="vital-item">
           <label>BMI</label>
           <input type="text" value={patient.bmi} readOnly className="bmi-calculated" />
+        </div>
+
+        <div className="vital-item">
+          <label>Ideal Weight (Normal BMI)</label>
+          <input type="text" value={idealWeightRange} readOnly className="bmi-calculated" />
         </div>
 
         <div className="vital-item">
